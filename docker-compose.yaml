@@ -1,40 +1,44 @@
-version: '3.8'
+version: '3.8' # Specify the version of Docker Compose to use.
 
 services:
+  # PostgreSQL service configuration
   postgres:
-    container_name: postgres
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      PGDATA: /data/postgres
+    container_name: postgres # Name of the container.
+    image: postgres:latest # The image to use for PostgreSQL.
+    environment: 
+      POSTGRES_USER: root # Username for the PostgreSQL database.
+      POSTGRES_PASSWORD: root # Password for the PostgreSQL database.
+      PGDATA: /data/postgres # Directory for storing PostgreSQL data inside the container.
     volumes:
-      - postgres:/data/postgres
+      - postgres:/data/postgres # Persistent volume to store database data.
     ports:
-      - "5432:5432"
+      - "5432:5432" # Map port 5432 on the host to port 5432 on the container.
     networks:
-      - postgres
-    restart: unless-stopped
+      - postgres # Connect this service to the 'postgres' network.
+    restart: unless-stopped # Restart the container unless it is explicitly stopped.
 
+  # pgAdmin service configuration (graphic interface)
   pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: pgadmin
+    image: dpage/pgadmin4:latest # The image to use for pgAdmin.
+    container_name: pgadmin # Name of the container.
     environment:
-      PGADMIN_DEFAULT_EMAIL: root@localhost.com
-      PGADMIN_DEFAULT_PASSWORD: root
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_DEFAULT_EMAIL: root@localhost.com # Default email for pgAdmin login.
+      PGADMIN_DEFAULT_PASSWORD: root # Default password for pgAdmin login.
+      PGADMIN_CONFIG_SERVER_MODE: 'False' # Enable desktop mode (optional configuration).
     volumes:
-      - pgadmin:/var/lib/pgadmin
+      - pgadmin:/var/lib/pgadmin # Persistent volume to store pgAdmin data.
     ports:
-      - "5050:80"
+      - "5050:80" # Map port 5050 on the host to port 80 on the container.
     networks:
-      - postgres
-    restart: unless-stopped
+      - postgres # Connect this service to the 'postgres' network.
+    restart: unless-stopped # Restart the container unless it is explicitly stopped.
 
+# Define the custom network
 networks:
   postgres:
-    driver: bridge
+    driver: bridge # Use the default bridge network driver.
 
+# Define persistent volumes for services
 volumes:
-  postgres:
-  pgadmin:
+  postgres: # Volume to persist PostgreSQL data.
+  pgadmin: # Volume to persist pgAdmin data.
